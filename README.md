@@ -1,12 +1,31 @@
-# React + Vite
+# Welcome to ActiNurse 🏥
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**ActiNurse** is a web app designed to make task management and performance tracking for nurses simple and efficient. Whether you're logging tasks, monitoring your progress, or setting reminders for important actions, **ActiNurse** has got you covered! 🩺💼
 
-Currently, two official plugins are available:
+## 🚀 Concept
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The idea behind **ActiNurse** is to create a platform that assists healthcare professionals in managing their tasks with ease, track their performance over time, and stay on top of things that need verification. The user-friendly interface ensures that busy nurses can log tasks, see their progress, and receive reminders effortlessly. 
 
-## Expanding the ESLint configuration
+## 🛠️ Technologies Used
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ⚛️ **React** – for building dynamic, reusable components.
+- 🎨 **Tailwind CSS** – for modern, responsive design.
+- 🟥 **Appwrite** - for backend and databases.
+
+## ✨ Features
+
+- **Task Logging**: Log your daily tasks with a click 📝.
+- **Performance Tracking**: View a graph of your task completion over time 📈.
+- **Reminders**: Stay on top of things that need checking ✅.
+
+---
+
+## 🔗 Live Demo
+
+Coming soon!
+
+---
+
+Feel free to contribute or share your feedback! ❤️
+
+---

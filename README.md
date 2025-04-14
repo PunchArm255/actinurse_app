@@ -22,7 +22,7 @@ The idea behind **ActiNurse** is to create a platform that assists healthcare pr
 
 ## 🔗 Live Demo
 
-Coming soon!
+Coming soon
 
 ---
 

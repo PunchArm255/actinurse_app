@@ -150,7 +150,7 @@ const Stocks = () => {
 
     // Format number as currency
     const formatCurrency = (amount) => {
-        return amount.toLocaleString('fr-FR') + ' DZD';
+        return amount.toLocaleString('fr-FR') + ' DHs';
     };
 
     const filteredItems = getFilteredItems();
@@ -312,7 +312,7 @@ const Stocks = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-500">Prix unitaire:</p>
-                                        <p className="font-semibold text-[#4f5796]">{item.price} DZD</p>
+                                        <p className="font-semibold text-[#4f5796]">{item.price} DHs</p>
                                     </div>
                                 </div>
                                 <div className="bg-gray-50 p-2 text-center">
@@ -351,7 +351,7 @@ const Stocks = () => {
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-500">Prix unitaire:</span>
-                                <span className="font-semibold text-[#4f5796]">{selectedItem.price} DZD</span>
+                                <span className="font-semibold text-[#4f5796]">{selectedItem.price} DHs</span>
                             </div>
                         </div>
 

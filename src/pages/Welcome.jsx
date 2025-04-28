@@ -1,18 +1,26 @@
-// src/pages/Welcome.jsx
 import { Link } from 'react-router-dom';
+import logo2 from '../assets/logo2.svg';
 
-export default function Welcome() {
+const Welcome = () => {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center">
-            <h1 className="text-4xl font-bold mb-8">Welcome to ActiNurse</h1>
-            <div className="flex gap-4">
-                <Link to="/signin" className="px-6 py-3 bg-blue-500 text-white rounded-lg">
-                    Sign In
-                </Link>
-                <Link to="/signup" className="px-6 py-3 bg-green-500 text-white rounded-lg">
-                    Sign Up
+        <div className="min-h-screen bg-gray-50 font-red-hat-display flex flex-col items-center justify-center px-4">
+            <div className="w-full max-w-md flex flex-col items-center animate-fadeIn">
+                {/* Logo */}
+                <img src={logo2} alt="ActiNurse Logo" className="w-48 md:w-64 mb-12 animate-pulse" />
+
+                {/* Continue Button */}
+                <Link
+                    to="/signin"
+                    className="bg-[#5E67AC] text-white w-full py-3 px-6 rounded-full
+                   hover:bg-[#4F5796] transition-all duration-300 ease-in-out
+                   text-center font-semibold text-lg shadow-lg
+                   transform hover:scale-105 active:scale-95"
+                >
+                    Continue with Email
                 </Link>
             </div>
         </div>
     );
-}
+};
+
+export default Welcome;

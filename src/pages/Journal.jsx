@@ -599,7 +599,7 @@ const Journal = () => {
 
                             {/* Medical staff section */}
                             <div className="pt-2 border-t border-[#4f5796]/20">
-                                <h3 className="text-lg font-semibold text-[#4f5796] mb-2">Personnel Médical</h3>
+                                <h3 className="text-lg font-semibold text-[#4f5796] mb-2">Equipe de garde</h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>

@@ -12,7 +12,7 @@ import ProgressIcon from '../assets/progress.svg';
 import ArchiveIcon from '../assets/archive.svg';
 import StocksIcon from '../assets/stocks.svg';
 
-const cardsData = [
+const defaultCardsData = [
     { id: '1', title: 'Journal', icon: JournalIcon, link: '/journal' },
     { id: '2', title: 'Reminders', icon: RemindersIcon, link: '/reminders' },
     { id: '3', title: 'Progress', icon: ProgressIcon, link: '/progress' },
@@ -35,10 +35,41 @@ const Home = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [fontSize, setFontSize] = useState('medium');
     const [language, setLanguage] = useState('fr');
+    const [cardsData, setCardsData] = useState([]);
+    const [inspirationalQuote, setInspirationalQuote] = useState('');
+
+    // Mouse drag state
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragCardIndex, setDragCardIndex] = useState(null);
+    const [dragStartX, setDragStartX] = useState(0);
+    const [dragCurrentX, setDragCurrentX] = useState(0);
 
     // Refs
     const carouselRef = useRef(null);
     const cardRefs = useRef([]);
+
+    // Load cards data from localStorage or use default
+    useEffect(() => {
+        const savedCardsData = localStorage.getItem('cardsOrder');
+        if (savedCardsData) {
+            setCardsData(JSON.parse(savedCardsData));
+        } else {
+            setCardsData(defaultCardsData);
+        }
+
+        // Select a random quote
+        const quotes = [
+            "Les soins infirmiers sont l'art de s'occuper des autres et une science de compassion.",
+            "Le meilleur moyen de s'améliorer est d'aider quelqu'un d'autre.",
+            "Un infirmier ne soigne pas seulement. Il écoute, rassure et réconforte.",
+            "Chaque jour apporte l'opportunité de faire une différence dans la vie d'autrui.",
+            "Notre expertise sauve des vies. Notre compassion guérit les âmes.",
+            "La santé ne consiste pas seulement à être exempt de maladie, mais à être pleinement vivant.",
+            "Soigner, c'est aimer. Aimer, c'est soigner.",
+            "Un simple geste de bienveillance peut illuminer la journée d'un patient."
+        ];
+        setInspirationalQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+    }, []);
 
     // Set up refs for each card
     cardRefs.current = cardsData.map((_, i) => cardRefs.current[i] ?? createRef());
@@ -69,7 +100,7 @@ const Home = () => {
     // Handle carousel scrolling logic
     useEffect(() => {
         const handleWheel = (e) => {
-            if (carouselRef.current) {
+            if (carouselRef.current && !isDragging) {
                 if (e.deltaY > 0) {
                     // Scroll right
                     setActiveCardIndex(prev => Math.min(prev + 1, cardsData.length - 1));
@@ -81,10 +112,12 @@ const Home = () => {
         };
 
         const handleKeyDown = (e) => {
-            if (e.key === 'ArrowRight') {
-                setActiveCardIndex(prev => Math.min(prev + 1, cardsData.length - 1));
-            } else if (e.key === 'ArrowLeft') {
-                setActiveCardIndex(prev => Math.max(prev - 1, 0));
+            if (!isDragging && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+                if (e.key === 'ArrowRight') {
+                    setActiveCardIndex(prev => Math.min(prev + 1, cardsData.length - 1));
+                } else if (e.key === 'ArrowLeft') {
+                    setActiveCardIndex(prev => Math.max(prev - 1, 0));
+                }
             }
         };
 
@@ -100,18 +133,18 @@ const Home = () => {
                 carouselElement.removeEventListener('wheel', handleWheel);
             }
         };
-    }, []);
+    }, [cardsData.length, isDragging]);
 
     // Scroll to the active card when activeCardIndex changes
     useEffect(() => {
-        if (cardRefs.current[activeCardIndex]?.current) {
+        if (cardRefs.current[activeCardIndex]?.current && !isDragging) {
             cardRefs.current[activeCardIndex].current.scrollIntoView({
                 behavior: 'smooth',
                 block: 'nearest',
                 inline: 'center'
             });
         }
-    }, [activeCardIndex]);
+    }, [activeCardIndex, isDragging]);
 
     // Handle touch events for mobile scrolling
     useEffect(() => {
@@ -119,19 +152,20 @@ const Home = () => {
         if (!carousel) return;
 
         let startX;
-        let isDragging = false;
+        let isSwiping = false;
 
         const handleTouchStart = (e) => {
             startX = e.touches[0].clientX;
-            isDragging = true;
+            isSwiping = true;
         };
 
         const handleTouchMove = (e) => {
-            if (!isDragging) return;
+            if (!isSwiping) return;
+
             const currentX = e.touches[0].clientX;
             const diff = startX - currentX;
 
-            if (Math.abs(diff) > 10) { // Threshold to avoid accidental swipes
+            if (Math.abs(diff) > 30) { // Threshold to avoid accidental swipes
                 if (diff > 0) {
                     // Swipe left, go right
                     setActiveCardIndex(prev => Math.min(prev + 1, cardsData.length - 1));
@@ -139,12 +173,12 @@ const Home = () => {
                     // Swipe right, go left
                     setActiveCardIndex(prev => Math.max(prev - 1, 0));
                 }
-                isDragging = false;
+                isSwiping = false;
             }
         };
 
         const handleTouchEnd = () => {
-            isDragging = false;
+            isSwiping = false;
         };
 
         carousel.addEventListener('touchstart', handleTouchStart);
@@ -156,7 +190,60 @@ const Home = () => {
             carousel.removeEventListener('touchmove', handleTouchMove);
             carousel.removeEventListener('touchend', handleTouchEnd);
         };
-    }, []);
+    }, [cardsData.length]);
+
+    // Mouse events for drag and drop
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            if (isDragging && dragCardIndex !== null) {
+                setDragCurrentX(e.clientX - dragStartX);
+            }
+        };
+
+        const handleMouseUp = () => {
+            if (isDragging && dragCardIndex !== null) {
+                const dragDistance = dragCurrentX;
+
+                // If dragged far enough, reorder cards
+                if (Math.abs(dragDistance) > 100) {
+                    const newCardsData = [...cardsData];
+
+                    // Dragged right, move card to the right in array
+                    if (dragDistance > 0 && dragCardIndex < cardsData.length - 1) {
+                        const temp = newCardsData[dragCardIndex];
+                        newCardsData[dragCardIndex] = newCardsData[dragCardIndex + 1];
+                        newCardsData[dragCardIndex + 1] = temp;
+                        setActiveCardIndex(dragCardIndex + 1);
+                    }
+                    // Dragged left, move card to the left in array
+                    else if (dragDistance < 0 && dragCardIndex > 0) {
+                        const temp = newCardsData[dragCardIndex];
+                        newCardsData[dragCardIndex] = newCardsData[dragCardIndex - 1];
+                        newCardsData[dragCardIndex - 1] = temp;
+                        setActiveCardIndex(dragCardIndex - 1);
+                    }
+
+                    setCardsData(newCardsData);
+                    localStorage.setItem('cardsOrder', JSON.stringify(newCardsData));
+                }
+            }
+
+            // Reset drag state
+            setIsDragging(false);
+            setDragCardIndex(null);
+            setDragCurrentX(0);
+        };
+
+        if (isDragging) {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        }
+
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isDragging, dragCardIndex, dragStartX, dragCurrentX, cardsData]);
 
     // Close modals when clicking outside
     useEffect(() => {
@@ -182,6 +269,35 @@ const Home = () => {
         setRating(0);
     };
 
+    // Start drag
+    const handleMouseDown = (e, index) => {
+        // Use right click for initiating drag
+        if (e.button === 2) {
+            e.preventDefault();
+            setIsDragging(true);
+            setDragCardIndex(index);
+            setDragStartX(e.clientX);
+            setActiveCardIndex(index);
+        }
+    };
+
+    // Handle context menu
+    const handleContextMenu = (e, index) => {
+        e.preventDefault();
+        setIsDragging(true);
+        setDragCardIndex(index);
+        setDragStartX(e.clientX);
+        setActiveCardIndex(index);
+        return false;
+    };
+
+    // Long touch for mobile
+    const handleLongTouch = (index) => {
+        setIsDragging(true);
+        setDragCardIndex(index);
+        setActiveCardIndex(index);
+    };
+
     // Convert index to scale for carousel effect
     const getCardScale = (index) => {
         const distance = Math.abs(index - activeCardIndex);
@@ -196,6 +312,17 @@ const Home = () => {
         if (distance === 0) return 1;
         if (distance === 1) return 0.8;
         return 0.6;
+    };
+
+    // Get transform for card being dragged
+    const getCardTransform = (index) => {
+        const scale = getCardScale(index);
+
+        if (index === dragCardIndex && isDragging) {
+            return `translateX(${dragCurrentX}px) scale(${scale})`;
+        }
+
+        return `scale(${scale})`;
     };
 
     return (
@@ -257,7 +384,7 @@ const Home = () => {
                                 setShowSettingsModal(false);
                             }}
                         >
-                            <span className="text-white font-black text-xs md:text-sm">{currentTime}</span>
+                            <span className="text-white font-black text-xs md:text-sm hidden sm:inline">{currentTime}</span>
                             <img src={profileImage} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white/30" alt="Profile" />
                         </div>
                     </div>
@@ -485,54 +612,70 @@ const Home = () => {
 
             {/* Main Content */}
             <main className={`pt-28 md:pt-32 px-4 md:px-6 pb-8 transition-all duration-300 ${isTopBarExpanded ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}>
-                <h1 className={`text-3xl md:text-5xl font-black ${darkMode ? 'text-white' : 'text-[#4f5796]'} mb-8 md:mb-12 pl-2`}>{getGreeting()}</h1>
+                <h1 className={`text-3xl md:text-5xl font-black text-[#5E67AC] mb-8 md:mb-12 text-center`}>{getGreeting()}</h1>
 
                 {/* Carousel Container */}
                 <div
                     ref={carouselRef}
-                    className="flex items-center justify-center h-[340px] md:h-[400px] mx-auto relative"
+                    className="flex items-center justify-center h-[340px] md:h-[400px] mx-auto relative overflow-hidden"
                 >
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className={`w-64 h-80 md:w-72 md:h-96 rounded-3xl border-2 border-dashed ${darkMode ? 'border-white/20' : 'border-[#5E67AC]/20'} transition-all duration-300`}></div>
-                    </div>
-
-                    <div className="flex space-x-6 items-center px-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-smooth">
+                    <div className="flex space-x-6 items-center px-6 overflow-x-auto scrollbar-none snap-x snap-mandatory scroll-smooth">
                         {cardsData.map((card, index) => (
-                            <Link
+                            <div
                                 key={card.id}
-                                to={card.link}
-                                ref={cardRefs.current[index]}
-                                className={`flex-none w-60 h-80 md:w-64 md:h-96 rounded-3xl p-6
-                                          transition-all duration-300 cursor-pointer snap-center
-                                          ${activeCardIndex === index ? 'shadow-xl shadow-[#5E67AC]/30' : ''}
-                                          hover:shadow-lg hover:shadow-[#5E67AC]/20`}
-                                style={{
-                                    backgroundColor: '#5E67AC',
-                                    transform: `scale(${getCardScale(index)})`,
-                                    opacity: getCardOpacity(index),
-                                    zIndex: 10 - Math.abs(activeCardIndex - index)
-                                }}
-                                onClick={(e) => {
-                                    if (activeCardIndex !== index) {
-                                        e.preventDefault();
-                                        setActiveCardIndex(index);
-                                    }
+                                className="cursor-grab active:cursor-grabbing"
+                                onMouseDown={(e) => handleMouseDown(e, index)}
+                                onContextMenu={(e) => handleContextMenu(e, index)}
+                                onTouchStart={() => {
+                                    const timer = setTimeout(() => {
+                                        handleLongTouch(index);
+                                    }, 800);
+
+                                    return () => clearTimeout(timer);
                                 }}
                             >
-                                <div className="flex flex-col items-center justify-between h-full">
-                                    <h2 className="text-2xl font-black text-white mb-4">{card.title}</h2>
-                                    <div className="flex-1 flex items-center justify-center">
-                                        <img
-                                            src={card.icon}
-                                            className="w-28 h-28 md:w-32 md:h-32 filter drop-shadow-lg transition-transform duration-300"
-                                            alt={card.title}
-                                            style={{
-                                                transform: activeCardIndex === index ? 'scale(1.1)' : 'scale(1)'
-                                            }}
-                                        />
+                                <Link
+                                    to={isDragging ? '#' : card.link}
+                                    ref={cardRefs.current[index]}
+                                    data-index={index}
+                                    className={`flex-none w-64 h-80 md:w-72 md:h-96 rounded-[2rem] p-6
+                                              transition-all duration-300 snap-center block
+                                              ${activeCardIndex === index ? 'shadow-xl shadow-[#5E67AC]/30' : ''}
+                                              ${dragCardIndex === index && isDragging ? 'ring-2 ring-white shadow-xl' : ''}
+                                              hover:shadow-lg hover:shadow-[#5E67AC]/20`}
+                                    style={{
+                                        backgroundColor: '#5E67AC',
+                                        transform: getCardTransform(index),
+                                        opacity: getCardOpacity(index),
+                                        zIndex: 10 - Math.abs(activeCardIndex - index)
+                                    }}
+                                    onClick={(e) => {
+                                        if (isDragging) {
+                                            e.preventDefault();
+                                            return;
+                                        }
+                                        if (activeCardIndex !== index) {
+                                            e.preventDefault();
+                                            setActiveCardIndex(index);
+                                        }
+                                    }}
+                                >
+                                    <div className="flex flex-col items-center justify-between h-full">
+                                        <h2 className="text-2xl font-black text-white mb-4">{card.title}</h2>
+                                        <div className="flex-1 flex items-center justify-center">
+                                            <img
+                                                src={card.icon}
+                                                className="w-28 h-28 md:w-32 md:h-32 filter drop-shadow-lg transition-transform duration-300"
+                                                alt={card.title}
+                                                style={{
+                                                    transform: activeCardIndex === index ? 'scale(1.1)' : 'scale(1)'
+                                                }}
+                                                draggable="false"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                            </Link>
+                                </Link>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -549,6 +692,15 @@ const Home = () => {
                             onClick={() => setActiveCardIndex(index)}
                         />
                     ))}
+                </div>
+
+                {/* Inspirational Quote */}
+                <div className="mt-8 md:mt-10 text-center px-4 max-w-2xl mx-auto">
+                    <div className={`${darkMode ? 'bg-gray-800/60' : 'bg-[#f1f3ff]'} rounded-2xl p-4 md:p-6 shadow-md`}>
+                        <p className={`text-lg md:text-xl italic font-medium ${darkMode ? 'text-white/80' : 'text-[#5E67AC]'}`}>
+                            "{inspirationalQuote}"
+                        </p>
+                    </div>
                 </div>
             </main>
         </div>

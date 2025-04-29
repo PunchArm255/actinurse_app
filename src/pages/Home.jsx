@@ -4,7 +4,8 @@ import logo from '../assets/logo.svg';
 import settingsIcon from '../assets/settings.svg';
 import notificationIcon from '../assets/notification.svg';
 import profileImage from '../assets/profile.png';
-import { logout, getCurrentUser } from '../lib/appwrite';
+import profileSVG from '../assets/profile.svg';
+import { logout, getCurrentUser, getProfile, getAvatarUrl } from '../lib/appwrite';
 
 // Import all card icons
 import JournalIcon from '../assets/journal.svg';
@@ -38,6 +39,7 @@ const Home = () => {
     const [language, setLanguage] = useState('fr');
     const [cardsData, setCardsData] = useState([]);
     const [inspirationalQuote, setInspirationalQuote] = useState('');
+    const [avatarUrl, setAvatarUrl] = useState(null);
 
     // Mouse drag state
     const [isDragging, setIsDragging] = useState(false);
@@ -87,12 +89,17 @@ const Home = () => {
             const result = await getCurrentUser();
             if (result.success) {
                 setUser(result.user);
+                // Fetch avatar/profile
+                const profile = await getProfile(result.user.$id);
+                if (profile && profile.avatarFileId) {
+                    setAvatarUrl(getAvatarUrl(profile.avatarFileId));
+                } else {
+                    setAvatarUrl(profileSVG);
+                }
             } else {
-                // If no user is found, redirect to login
                 navigate('/signin');
             }
         };
-
         fetchCurrentUser();
     }, [navigate]);
 
@@ -426,7 +433,7 @@ const Home = () => {
                             }}
                         >
                             <span className="text-white font-black text-xs md:text-sm hidden sm:inline">{currentTime}</span>
-                            <img src={profileImage} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white/30" alt="Profile" />
+                            <img src={avatarUrl || profileSVG} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white/30" alt="Profile" />
                         </div>
                     </div>
                 </div>
@@ -625,7 +632,7 @@ const Home = () => {
                         <div className="bg-gradient-to-b from-[#5E67AC] to-[#4F5796] text-white p-6 text-center">
                             <div className="mb-3 mx-auto w-20 h-20 rounded-full border-4 border-white/30 overflow-hidden">
                                 <img
-                                    src={profileImage}
+                                    src={avatarUrl || profileSVG}
                                     alt="Profile"
                                     className="w-full h-full object-cover"
                                 />

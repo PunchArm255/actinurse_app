@@ -2,7 +2,8 @@ import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo2 from '../assets/logo2.svg';
 import profileImage from '../assets/profile.png';
-import { createAccount } from '../lib/appwrite';
+import profileSVG from '../assets/profile.svg';
+import { createAccount, uploadAvatar, createOrUpdateProfile } from '../lib/appwrite';
 
 const SignUp = () => {
     const [fullName, setFullName] = useState('');
@@ -10,6 +11,7 @@ const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [avatar, setAvatar] = useState(null);
+    const [avatarFile, setAvatarFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const fileInputRef = useRef(null);
@@ -18,6 +20,7 @@ const SignUp = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setAvatarFile(file);
             const reader = new FileReader();
             reader.onload = (e) => {
                 setAvatar(e.target.result);
@@ -38,24 +41,24 @@ const SignUp = () => {
         console.log("Starting account creation with:", { email, password, name: fullName });
 
         try {
+            // 1. Create account
             const result = await createAccount(email, password, fullName);
-            console.log("Account creation result:", result);
-
             if (result.success) {
+                let avatarFileId = null;
+                // 2. If avatar file is selected, upload to Appwrite Storage
+                if (avatarFile) {
+                    const uploadResult = await uploadAvatar(avatarFile);
+                    avatarFileId = uploadResult.$id;
+                }
+                // 3. Save profile with avatarFileId
+                await createOrUpdateProfile(result.user.$id, avatarFileId);
                 if (result.loginFailed) {
-                    // Account created but auto-login failed
                     setErrorMessage(result.error);
-                    console.warn("Account created but auto-login failed. Redirecting to signin page.");
-                    setTimeout(() => {
-                        navigate('/signin');
-                    }, 3000);
+                    setTimeout(() => { navigate('/signin'); }, 3000);
                 } else {
-                    // Success - account created and logged in
-                    console.log("Successfully created account and logged in");
                     navigate('/home');
                 }
             } else {
-                console.error("Error creating account:", result.error);
                 setErrorMessage(result.error);
             }
         } catch (error) {
@@ -92,7 +95,7 @@ const SignUp = () => {
                         transition-all duration-300 hover:border-[#5E67AC] group"
                         >
                             <img
-                                src={avatar || profileImage}
+                                src={avatar || profileSVG}
                                 alt="Profile"
                                 className="w-full h-full object-cover"
                             />

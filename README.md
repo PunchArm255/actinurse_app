@@ -29,3 +29,55 @@ Coming soon!
 Feel free to contribute or share your feedback! ❤️
 
 ---
+
+# ActiNurse Authentication Setup
+
+## Important Setup Instructions
+
+To get the authentication working correctly:
+
+1. Set the Appwrite Project ID in `src/lib/appwrite.js`:
+
+```javascript
+// Appwrite configuration
+const client = new Client()
+    .setEndpoint('https://cloud.appwrite.io/v1')
+    .setProject('6810adc30016c23ec237'); // Already configured with your Project ID
+```
+
+2. Make sure that your Appwrite project has the correct hostname configured:
+   - Go to your Appwrite console
+   - Navigate to your project settings
+   - Under "Platforms," make sure you have added your localhost domain (e.g., http://localhost:5173)
+
+## Testing Authentication
+
+When testing authentication:
+
+1. The signup process should:
+   - Create a new user account 
+   - Automatically log in the user
+   - Redirect to the home page
+
+2. If you encounter any issues:
+   - Check the browser console for detailed error messages
+   - Verify your Appwrite project settings
+   - Ensure you have the correct project ID
+
+## Authentication Flow
+
+This implementation uses direct Appwrite SDK calls without Context API for simplicity:
+
+1. User signs up with email/password
+2. User is automatically logged in after sign-up
+3. Protected routes check for authentication on each page load
+4. Login/logout functions manage user sessions
+
+## Debug Information
+
+If sign up is not working:
+- Check if there are any console errors
+- Verify your Appwrite project ID is correct
+- Make sure you've added the correct platform/hostname in Appwrite
+- Check password requirements (min 8 characters by default)
+- Verify if your email format is valid

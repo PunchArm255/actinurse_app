@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo2 from '../assets/logo2.svg';
 import profileImage from '../assets/profile.png';
+import { createAccount } from '../lib/appwrite';
 
 const SignUp = () => {
     const [fullName, setFullName] = useState('');
@@ -10,7 +11,9 @@ const SignUp = () => {
     const [password, setPassword] = useState('');
     const [avatar, setAvatar] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -27,17 +30,40 @@ const SignUp = () => {
         fileInputRef.current.click();
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setErrorMessage('');
 
-        // Here you would add your registration logic
+        console.log("Starting account creation with:", { email, password, name: fullName });
 
-        // Simulate registration for demo purposes
-        setTimeout(() => {
+        try {
+            const result = await createAccount(email, password, fullName);
+            console.log("Account creation result:", result);
+
+            if (result.success) {
+                if (result.loginFailed) {
+                    // Account created but auto-login failed
+                    setErrorMessage(result.error);
+                    console.warn("Account created but auto-login failed. Redirecting to signin page.");
+                    setTimeout(() => {
+                        navigate('/signin');
+                    }, 3000);
+                } else {
+                    // Success - account created and logged in
+                    console.log("Successfully created account and logged in");
+                    navigate('/home');
+                }
+            } else {
+                console.error("Error creating account:", result.error);
+                setErrorMessage(result.error);
+            }
+        } catch (error) {
+            console.error('Account creation error:', error);
+            setErrorMessage(error.message || 'An unexpected error occurred');
+        } finally {
             setIsLoading(false);
-            // Navigate to home or show success
-        }, 1500);
+        }
     };
 
     return (
@@ -50,6 +76,12 @@ const SignUp = () => {
                     <h1 className="text-2xl md:text-3xl font-black text-[#4f5796]">Create Account</h1>
                     <p className="text-gray-500 mt-2">Join ActiNurse today</p>
                 </div>
+
+                {errorMessage && (
+                    <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+                        {errorMessage}
+                    </div>
+                )}
 
                 {/* Avatar Upload */}
                 <div className="flex justify-center mb-6">

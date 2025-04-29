@@ -1,23 +1,39 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo2 from '../assets/logo2.svg';
+import { login } from '../lib/appwrite';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setErrorMessage('');
 
-        // Here you would add your authentication logic
+        console.log("Attempting login with:", { email });
 
-        // Simulate authentication for demo purposes
-        setTimeout(() => {
+        try {
+            const result = await login(email, password);
+            console.log("Login result:", result);
+
+            if (result.success) {
+                console.log("Successfully logged in");
+                navigate('/home');
+            } else {
+                console.error("Login failed:", result.error);
+                setErrorMessage(result.error);
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            setErrorMessage(error.message || 'An unexpected error occurred');
+        } finally {
             setIsLoading(false);
-            // Navigate to home or show error
-        }, 1500);
+        }
     };
 
     return (
@@ -30,6 +46,12 @@ const SignIn = () => {
                     <h1 className="text-2xl md:text-3xl font-black text-[#4f5796]">Welcome Back</h1>
                     <p className="text-gray-500 mt-2">Sign in to your account</p>
                 </div>
+
+                {errorMessage && (
+                    <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+                        {errorMessage}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>

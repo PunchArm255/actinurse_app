@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback, createRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import settingsIcon from '../assets/settings.svg';
 import notificationIcon from '../assets/notification.svg';
 import profileImage from '../assets/profile.png';
+import { logout, getCurrentUser } from '../lib/appwrite';
 
 // Import all card icons
 import JournalIcon from '../assets/journal.svg';
@@ -48,6 +49,12 @@ const Home = () => {
     const carouselRef = useRef(null);
     const cardRefs = useRef([]);
 
+    // Use the authentication context
+    const navigate = useNavigate();
+
+    // State for user
+    const [user, setUser] = useState(null);
+
     // Load cards data from localStorage or use default
     useEffect(() => {
         const savedCardsData = localStorage.getItem('cardsOrder');
@@ -74,13 +81,35 @@ const Home = () => {
     // Set up refs for each card
     cardRefs.current = cardsData.map((_, i) => cardRefs.current[i] ?? createRef());
 
-    // Time-based utilities
+    // Fetch the current user on component mount
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            const result = await getCurrentUser();
+            if (result.success) {
+                setUser(result.user);
+            } else {
+                // If no user is found, redirect to login
+                navigate('/signin');
+            }
+        };
+
+        fetchCurrentUser();
+    }, [navigate]);
+
+    // Get first name from full name
+    const getFirstName = () => {
+        if (!user || !user.name) return '';
+        const nameParts = user.name.split(' ');
+        return nameParts[0];
+    };
+
+    // Modified greeting to use the user's first name
     const getGreeting = useCallback(() => {
         const hour = new Date().getHours();
-        if (hour < 12) return 'Good Morning!';
-        if (hour < 18) return 'Good Afternoon!';
-        return 'Good Evening!';
-    }, []);
+        const name = user ? getFirstName() : '';
+        const greeting = hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening';
+        return `${greeting}, ${name}!`;
+    }, [user]);
 
     // Update time and date every second
     useEffect(() => {
@@ -323,6 +352,18 @@ const Home = () => {
         }
 
         return `scale(${scale})`;
+    };
+
+    // Handle logout
+    const handleLogout = async () => {
+        console.log("Logging out...");
+        const result = await logout();
+        if (result.success) {
+            console.log("Logout successful");
+            navigate('/signin');
+        } else {
+            console.error("Logout failed:", result.error);
+        }
     };
 
     return (
@@ -589,7 +630,7 @@ const Home = () => {
                                     className="w-full h-full object-cover"
                                 />
                             </div>
-                            <h3 className="font-bold text-lg">John Doe</h3>
+                            <h3 className="font-bold text-lg">{user ? user.name : 'Guest User'}</h3>
                             <p className="text-sm opacity-80">Infirmier en chef</p>
                         </div>
                         <div className="p-4 space-y-2">
@@ -599,7 +640,10 @@ const Home = () => {
                                 </svg>
                                 Mon Profil
                             </button>
-                            <button className="w-full bg-[#ffd3d3] hover:bg-[#ffbcbc] text-[#ac5e5e] rounded-lg py-2 transition-colors text-sm font-medium flex items-center justify-center">
+                            <button
+                                className="w-full bg-[#ffd3d3] hover:bg-[#ffbcbc] text-[#ac5e5e] rounded-lg py-2 transition-colors text-sm font-medium flex items-center justify-center"
+                                onClick={handleLogout}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>

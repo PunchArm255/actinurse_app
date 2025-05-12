@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import settingsIcon from '../assets/settings.svg';
 import notificationIcon from '../assets/notification.svg';
-import profileImage from '../assets/profile.png';
+import profileImage from '../assets/profile.svg';
 
 const Stocks = () => {
     const [isExpanded, setIsExpanded] = useState(false);

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import settingsIcon from '../assets/settings.svg';
 import notificationIcon from '../assets/notification.svg';
-import profileImage from '../assets/profile.png';
+import profileImage from '../assets/profile.svg';
 
 const Reminders = () => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -202,7 +202,7 @@ const Reminders = () => {
                                 value={reminderType}
                                 onChange={(e) => setReminderType(e.target.value)}
                                 className={`border bg-[#f1f3ff] rounded-lg p-2 ${reminderType === '1' ? 'text-red-400' :
-                                        reminderType === '2' ? 'text-green-300' : 'text-yellow-300'
+                                    reminderType === '2' ? 'text-green-300' : 'text-yellow-300'
                                     }`}
                             >
                                 <option value="1" className="text-red-400">Examens Paracliniques</option>
@@ -279,8 +279,8 @@ const CountdownTimer = ({ reminder, onExpire }) => {
 
     return (
         <div className={`bg-white p-4 rounded-2xl mb-4 shadow-lg ${reminder.type === '1' ? 'bg-red-100 text-red-500 shadow-[0_0_10px_0.1px_#ffcccc]' :
-                reminder.type === '2' ? 'bg-green-100 text-green-500 shadow-[0_0_10px_0.1px_#ccffcc]' :
-                    'bg-yellow-100 text-yellow-500 shadow-[0_0_10px_0.1px_#ffffcc]'
+            reminder.type === '2' ? 'bg-green-100 text-green-500 shadow-[0_0_10px_0.1px_#ccffcc]' :
+                'bg-yellow-100 text-yellow-500 shadow-[0_0_10px_0.1px_#ffffcc]'
             }`}>
             <h2 className="text-xl font-bold">{reminder.name}</h2>
             {timeLeft.total > 0 ? (

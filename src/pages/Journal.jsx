@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import settingsIcon from '../assets/settings.svg';
 import notificationIcon from '../assets/notification.svg';
-import profileImage from '../assets/profile.png';
+import profileImage from '../assets/profile.svg';
 
 const Journal = () => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -203,6 +203,43 @@ const Journal = () => {
             );
             setTasks(updatedTasks);
         }
+
+        handleCloseModal();
+    };
+
+    const handleArchiveTask = () => {
+        if (!selectedRoom || !selectedBed || !editingTask) return;
+
+        const roomKey = `room_${selectedRoom}`;
+        const bedKey = `bed_${selectedBed}`;
+
+        // Get the task to archive
+        const taskToArchive = tasks[roomKey][bedKey].find(t => t.id === editingTask.id);
+        if (!taskToArchive) return;
+
+        // Add room and bed info and archive date to the task
+        const archivedTask = {
+            ...taskToArchive,
+            room: selectedRoom,
+            bed: selectedBed,
+            archivedDate: new Date().toISOString()
+        };
+
+        // Get current archived actes
+        const archivedActes = JSON.parse(localStorage.getItem('archivedActes')) || [];
+
+        // Add the new archived acte
+        archivedActes.push(archivedTask);
+
+        // Save to localStorage
+        localStorage.setItem('archivedActes', JSON.stringify(archivedActes));
+
+        // Remove from tasks
+        const updatedTasks = { ...tasks };
+        updatedTasks[roomKey][bedKey] = updatedTasks[roomKey][bedKey].filter(
+            t => t.id !== editingTask.id
+        );
+        setTasks(updatedTasks);
 
         handleCloseModal();
     };
@@ -488,6 +525,16 @@ const Journal = () => {
                     </Link>
                 </div>
 
+                <div className="mb-4 md:mb-8 flex justify-end">
+                    <Link
+                        to="/archive"
+                        className="bg-[#5e8cac] text-[#e1f0ff] rounded-full py-2 px-6 
+                                 hover:bg-[#4f7690] transition-colors text-sm md:text-base"
+                    >
+                        Voir les Archives
+                    </Link>
+                </div>
+
                 {/* Display Area - responsive and with proper height controls */}
                 <div className="w-full h-[500px] md:h-[600px] bg-[#f1f3ff] rounded-3xl p-4 
                               shadow-[0_0_50px_0.1px_#cbd1ff] flex flex-col">
@@ -657,12 +704,20 @@ const Journal = () => {
                                 Enregistrer
                             </button>
                             {editingTask && (
-                                <button
-                                    onClick={handleDeleteTask}
-                                    className="bg-[#d55e5e] text-[#ffe1e1] rounded-full py-2 px-4 hover:bg-[#b84f4f] transition-colors"
-                                >
-                                    Supprimer
-                                </button>
+                                <>
+                                    <button
+                                        onClick={handleArchiveTask}
+                                        className="bg-[#5e8cac] text-[#e1f0ff] rounded-full py-2 px-4 hover:bg-[#4f7690] transition-colors"
+                                    >
+                                        Archiver
+                                    </button>
+                                    <button
+                                        onClick={handleDeleteTask}
+                                        className="bg-[#d55e5e] text-[#ffe1e1] rounded-full py-2 px-4 hover:bg-[#b84f4f] transition-colors"
+                                    >
+                                        Supprimer
+                                    </button>
+                                </>
                             )}
                             <button
                                 onClick={handleCloseModal}

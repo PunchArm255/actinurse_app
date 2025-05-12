@@ -4,7 +4,7 @@ import { Chart } from 'chart.js/auto';
 import logo from '../assets/logo.svg';
 import settingsIcon from '../assets/settings.svg';
 import notificationIcon from '../assets/notification.svg';
-import profileImage from '../assets/profile.png';
+import profileImage from '../assets/profile.svg';
 
 const Progress = () => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -30,12 +30,21 @@ const Progress = () => {
     }, [activeFilter]);
 
     const getTasks = () => {
-        return JSON.parse(localStorage.getItem('tasks')) || [];
+        return JSON.parse(localStorage.getItem('tasks')) || {};
     };
 
     const filterTasksByType = (type) => {
         const tasks = getTasks();
-        if (type === 'Notes') return tasks;
+        const allTasks = [];
+
+        // Flatten the tasks structure to get all tasks
+        Object.values(tasks).forEach(rooms => {
+            Object.values(rooms).forEach(actes => {
+                allTasks.push(...actes);
+            });
+        });
+
+        if (type === 'Notes') return allTasks;
 
         const typeMapping = {
             Examens: '1',
@@ -43,7 +52,7 @@ const Progress = () => {
             Soins: '3',
         };
 
-        return tasks.filter((task) => task.type === typeMapping[type]);
+        return allTasks.filter((task) => task.type === typeMapping[type]);
     };
 
     const getNotesByDay = (filteredTasks) => {
@@ -51,8 +60,10 @@ const Progress = () => {
         const notesCount = Array(7).fill(0);
 
         filteredTasks.forEach((task) => {
-            const dayIndex = new Date(task.date).getDay();
-            notesCount[dayIndex]++;
+            if (task.date) {
+                const dayIndex = new Date(task.date).getDay();
+                notesCount[dayIndex]++;
+            }
         });
 
         return { days, notesCount };
@@ -163,37 +174,37 @@ const Progress = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#f7f7f7] font-red-hat-display">
+        <div className="min-h-screen bg-gray-50 font-red-hat-display">
             {/* Top Bar */}
             <div
-                className={`fixed top-0 w-full z-50 bg-[#5e67ac] transition-all duration-300 ${isExpanded ? 'h-screen' : 'h-20'
-                    } rounded-b-3xl shadow-lg cursor-pointer`}
+                className={`fixed top-0 w-full z-50 bg-[#5E67AC] transition-all duration-300 
+                          ${isExpanded ? 'h-screen' : 'h-20'} rounded-b-3xl shadow-lg cursor-pointer`}
                 onClick={() => setIsExpanded(!isExpanded)}
             >
-                <div className="flex items-center justify-between h-20 px-6">
-                    <img src={logo} alt="ActiNurse Logo" className="h-12 w-auto" />
+                <div className="flex items-center justify-between h-20 px-4 md:px-6">
+                    <img src={logo} alt="ActiNurse Logo" className="h-10 md:h-12 w-auto" />
 
-                    <div className="flex items-center gap-4">
-                        <button className="p-2 rounded-full hover:bg-[#F5F5F5]/20 transition-colors">
-                            <img src={settingsIcon} className="w-6 h-6 filter drop-shadow-sm" alt="Settings" />
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <button className="p-1 md:p-2 rounded-full hover:bg-secondary/20 transition-colors">
+                            <img src={settingsIcon} className="w-5 h-5 md:w-6 md:h-6 filter drop-shadow-sm" alt="Settings" />
                         </button>
-                        <button className="p-2 rounded-full hover:bg-[#F5F5F5]/20 transition-colors">
-                            <img src={notificationIcon} className="w-6 h-6 filter drop-shadow-sm" alt="Notifications" />
+                        <button className="p-1 md:p-2 rounded-full hover:bg-secondary/20 transition-colors">
+                            <img src={notificationIcon} className="w-5 h-5 md:w-6 md:h-6 filter drop-shadow-sm" alt="Notifications" />
                         </button>
-                        <div className="flex items-center bg-white/20 rounded-full pl-3 pr-4 gap-2">
-                            <span className="text-[#F5F5F5] font-black text-sm">{currentTime}</span>
-                            <img src={profileImage} className="w-10 h-10 rounded-full" alt="Profile" />
+                        <div className="flex items-center bg-white/20 rounded-full pl-2 md:pl-3 pr-2 md:pr-4 gap-1 md:gap-2">
+                            <span className="text-secondary font-black text-xs md:text-sm">{currentTime}</span>
+                            <img src={profileImage} className="w-8 h-8 md:w-10 md:h-10 rounded-full" alt="Profile" />
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Main Content */}
-            <main className="pt-32 px-10 py-8 ml-[100px]">
-                <h1 className="text-5xl font-bold text-[#5e67ac] mb-4">Progrès</h1>
+            <main className="pt-24 md:pt-32 px-4 md:px-10 pb-8 max-w-7xl mx-auto">
+                <h1 className="text-3xl md:text-5xl font-black text-[#5e67ac] mb-4 md:mb-8">Progrès</h1>
 
                 {/* Filter Buttons */}
-                <div className="w-full flex gap-4 mb-6 items-center">
+                <div className="w-full flex flex-wrap gap-2 md:gap-4 mb-6 items-center">
                     {['Notes', 'Examens', 'Traitement', 'Soins'].map((type) => (
                         <button
                             key={type}
@@ -213,7 +224,7 @@ const Progress = () => {
                     ))}
 
                     <Link
-                        to="/"
+                        to="/home"
                         className="bg-[#5e67ac] text-[#cbd1ff] rounded-full py-2 px-6 ml-auto hover:bg-[#4f5796] transition-colors"
                     >
                         Retour à l'accueil
@@ -221,7 +232,7 @@ const Progress = () => {
                 </div>
 
                 {/* Graph Container */}
-                <div className="w-full h-[600px] bg-[#f1f3ff] rounded-3xl p-4 mt-4 shadow-[0_0_50px_0.1px_#cbd1ff]">
+                <div className="w-full h-[600px] bg-[#f1f3ff] rounded-3xl p-4 md:p-6 shadow-[0_0_50px_0.1px_#cbd1ff]">
                     <canvas ref={chartRef} />
                 </div>
             </main>

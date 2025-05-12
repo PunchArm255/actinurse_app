@@ -384,7 +384,7 @@ const Home = () => {
                     <div className="flex items-center cursor-pointer" onClick={() => setIsTopBarExpanded(!isTopBarExpanded)}>
                         <img src={logo} alt="ActiNurse Logo" className="h-10 md:h-12 w-auto transition-transform duration-300 hover:scale-105" />
                         <div className={`ml-3 text-white text-lg font-bold opacity-70 transition-opacity ${isTopBarExpanded ? 'opacity-100' : 'hidden md:block'}`}>
-                            ActiNurse <span className="text-xs opacity-70">v0.1</span>
+                            <span className="text-xs opacity-70">v0.1</span>
                         </div>
                     </div>
 
@@ -716,7 +716,7 @@ const Home = () => {
                                         <div className="flex-1 flex items-center justify-center">
                                             <img
                                                 src={card.icon}
-                                                className="w-28 h-28 md:w-32 md:h-32 filter drop-shadow-lg transition-transform duration-300"
+                                                className={`w-28 h-28 md:w-32 md:h-32 filter drop-shadow-lg transition-transform duration-300 ${card.title === 'Archive' ? 'preserve-color' : ''}`}
                                                 alt={card.title}
                                                 style={{
                                                     transform: activeCardIndex === index ? 'scale(1.1)' : 'scale(1)'

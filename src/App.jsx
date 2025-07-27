@@ -9,6 +9,7 @@ import Archive from "./pages/Archive";
 import Progress from "./pages/Progress";
 import Stocks from "./pages/Stocks";
 import Welcome from "./pages/Welcome";
+import LoadingScreen from "./components/LoadingScreen";
 import { getCurrentUser } from "./lib/appwrite";
 
 // Simple protected route component
@@ -32,7 +33,7 @@ const ProtectedRoute = ({ children }) => {
   }, []);
 
   if (loading) {
-    return <div className="flex h-screen w-screen items-center justify-center">Loading...</div>;
+    return <LoadingScreen />;
   }
 
   if (!user) {
@@ -147,7 +148,7 @@ const PublicRoute = ({ children }) => {
   }, []);
 
   if (loading) {
-    return <div className="flex h-screen w-screen items-center justify-center">Loading...</div>;
+    return <LoadingScreen />;
   }
 
   if (user) {

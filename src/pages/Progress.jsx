@@ -117,8 +117,9 @@ const Progress = () => {
                             stepSize: 1,
                             color: datasets.length > 1 ? '#5e67ac' : datasets[0].borderColor,
                             font: {
-                                family: 'RedHatDisplay',
+                                family: 'Red Hat Display',
                                 size: 14,
+                                weight: '500',
                             },
                         },
                         grid: {
@@ -129,8 +130,9 @@ const Progress = () => {
                         ticks: {
                             color: datasets.length > 1 ? '#5e67ac' : datasets[0].borderColor,
                             font: {
-                                family: 'RedHatDisplay',
+                                family: 'Red Hat Display',
                                 size: 14,
+                                weight: '500',
                             },
                         },
                         grid: {
@@ -143,20 +145,23 @@ const Progress = () => {
                         labels: {
                             color: datasets.length > 1 ? '#5e67ac' : datasets[0].borderColor,
                             font: {
-                                family: 'RedHatDisplay',
+                                family: 'Red Hat Display',
                                 size: 16,
+                                weight: '600',
                             },
                         },
                     },
                     tooltip: {
                         backgroundColor: datasets.length > 1 ? '#5e67ac' : datasets[0].borderColor,
                         titleFont: {
-                            family: 'RedHatDisplay',
+                            family: 'Red Hat Display',
                             size: 14,
+                            weight: '600',
                         },
                         bodyFont: {
-                            family: 'RedHatDisplay',
+                            family: 'Red Hat Display',
                             size: 12,
+                            weight: '500',
                         },
                     },
                 },

@@ -1,13 +1,29 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import settingsIcon from '../assets/settings.svg';
 import notificationIcon from '../assets/notification.svg';
-import profileImage from '../assets/profile.svg';
+import profileImage from '../assets/profile.png';
+import profileSVG from '../assets/profile.svg';
+import { logout, getCurrentUser, getProfile, getAvatarUrl } from '../lib/appwrite';
 
 const Reminders = () => {
-    const [isExpanded, setIsExpanded] = useState(false);
+    // State management
+    const [isTopBarExpanded, setIsTopBarExpanded] = useState(false);
     const [currentTime, setCurrentTime] = useState('');
+    const [currentDate, setCurrentDate] = useState('');
+    const [weather, setWeather] = useState({ temp: '22°C', condition: 'Sunny' });
+    const [showNotificationModal, setShowNotificationModal] = useState(false);
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [showProfileModal, setShowProfileModal] = useState(false);
+    const [feedback, setFeedback] = useState('');
+    const [rating, setRating] = useState(0);
+    const [darkMode, setDarkMode] = useState(false);
+    const [fontSize, setFontSize] = useState('medium');
+    const [language, setLanguage] = useState('fr');
+    const [avatarUrl, setAvatarUrl] = useState(null);
+
+    // Reminders specific state
     const [reminders, setReminders] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [editingReminder, setEditingReminder] = useState(null);
@@ -15,20 +31,106 @@ const Reminders = () => {
     const [reminderType, setReminderType] = useState('1');
     const [countdownMinutes, setCountdownMinutes] = useState('');
 
+    // Use the authentication context
+    const navigate = useNavigate();
+
+    // State for user
+    const [user, setUser] = useState(null);
+
+    // Fetch the current user on component mount
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            const result = await getCurrentUser();
+            if (result.success) {
+                setUser(result.user);
+                // Fetch avatar/profile
+                const profile = await getProfile(result.user.$id);
+                if (profile && profile.avatarFileId) {
+                    setAvatarUrl(getAvatarUrl(profile.avatarFileId));
+                } else {
+                    setAvatarUrl(profileSVG);
+                }
+            } else {
+                navigate('/signin');
+            }
+        };
+        fetchCurrentUser();
+    }, [navigate]);
+
+    // Get first name from full name
+    const getFirstName = () => {
+        if (!user || !user.name) return '';
+        const nameParts = user.name.split(' ');
+        return nameParts[0];
+    };
+
+    // Modified greeting to use the user's first name
+    const getGreeting = useCallback(() => {
+        const hour = new Date().getHours();
+        const name = user ? getFirstName() : '';
+        const greeting = hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening';
+        return `${greeting}, ${name}!`;
+    }, [user]);
+
+    // Update time and date every second
+    useEffect(() => {
+        const timer = setInterval(() => {
+            const now = new Date();
+            setCurrentTime(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            setCurrentDate(now.toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }));
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [language]);
+
     useEffect(() => {
         const savedReminders = JSON.parse(localStorage.getItem('reminders')) || [];
         setReminders(savedReminders);
-
-        const timer = setInterval(() => {
-            setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-        }, 1000);
-
-        return () => clearInterval(timer);
     }, []);
 
     useEffect(() => {
         localStorage.setItem('reminders', JSON.stringify(reminders));
     }, [reminders]);
+
+    // Close modals when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (!e.target.closest('.modal-content') &&
+                (showNotificationModal || showSettingsModal || showProfileModal)) {
+                setShowNotificationModal(false);
+                setShowSettingsModal(false);
+                setShowProfileModal(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showNotificationModal, showSettingsModal, showProfileModal]);
+
+    // Handle feedback submission
+    const handleSubmitFeedback = () => {
+        alert(`Merci pour votre feedback! Évaluation: ${rating}/5`);
+        setFeedback('');
+        setRating(0);
+    };
+
+    // Handle logout
+    const handleLogout = async () => {
+        console.log("Logging out...");
+        const result = await logout();
+        if (result.success) {
+            console.log("Logout successful");
+            navigate('/signin');
+        } else {
+            console.error("Logout failed:", result.error);
+        }
+    };
 
     const getTimeRemaining = (expirationTime) => {
         const now = new Date().getTime();
@@ -90,12 +192,12 @@ const Reminders = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#f7f7f7] font-red-hat-display">
+        <div className={`min-h-screen font-red-hat-display transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
             {/* Top Bar */}
             <div
-                className={`fixed top-0 w-full z-50 bg-[#5e67ac] transition-all duration-300 ${isExpanded ? 'h-screen' : 'h-20'
+                className={`fixed top-0 w-full z-50 bg-[#5e67ac] transition-all duration-300 ${isTopBarExpanded ? 'h-screen' : 'h-20'
                     } rounded-b-3xl shadow-lg cursor-pointer`}
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={() => setIsTopBarExpanded(!isTopBarExpanded)}
             >
                 <div className="flex items-center justify-between h-20 px-6">
                     <img src={logo} alt="ActiNurse Logo" className="h-12 w-auto" />

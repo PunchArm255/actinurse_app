@@ -6,6 +6,9 @@ import settingsIcon from '../assets/settings.svg';
 import notificationIcon from '../assets/notification.svg';
 import profileImage from '../assets/profile.png';
 import profileSVG from '../assets/profile.svg';
+import abirImage from '../assets/abir.png';
+import mohammedImage from '../assets/mohammed.png';
+import oumaimaImage from '../assets/oumaima.png';
 import ProgressIcon from '../assets/progress.svg';
 import StocksIcon from '../assets/stocks.svg';
 import JournalIcon from '../assets/journal.svg';
@@ -23,6 +26,7 @@ const Home = () => {
     const [showNotificationModal, setShowNotificationModal] = useState(false);
     const [showSettingsModal, setShowSettingsModal] = useState(false);
     const [showProfileModal, setShowProfileModal] = useState(false);
+    const [showTeamModal, setShowTeamModal] = useState(false);
     const [feedback, setFeedback] = useState('');
     const [rating, setRating] = useState(0);
     const [darkMode, setDarkMode] = useState(false);
@@ -53,6 +57,29 @@ const Home = () => {
         { id: '4', title: 'Reminders', icon: RemindersIcon, link: '/reminders' },
         { id: '5', title: 'Archive', icon: ArchiveIcon, link: '/archive' }
     ];
+
+    // Log user interaction patterns for enhancement validation
+    useEffect(() => {
+        console.log('🏠 HOME PAGE - User Interaction Analysis:');
+        console.log('📊 Current user:', user?.name || 'Not logged in');
+        console.log('🕐 Current time:', currentTime);
+        console.log('📅 Current date:', currentDate);
+        console.log('🎯 Active card index:', activeCardIndex);
+        console.log('📱 Screen size:', window.innerWidth, 'x', window.innerHeight);
+        console.log('🌙 Dark mode:', darkMode);
+
+        // Track card interactions for potential quick actions
+        const trackCardClick = (cardTitle) => {
+            console.log(`🎯 CARD CLICKED: ${cardTitle} at ${new Date().toLocaleTimeString()}`);
+        };
+
+        // Expose tracking function globally for enhancement analysis
+        window.trackHomeInteraction = trackCardClick;
+
+        return () => {
+            delete window.trackHomeInteraction;
+        };
+    }, [user, currentTime, currentDate, activeCardIndex, darkMode]);
 
     const [cardsData, setCardsData] = useState(defaultCardsData);
 
@@ -167,6 +194,18 @@ const Home = () => {
         setRating(0);
     };
 
+    const handleTeamMemberClick = (memberName) => {
+        console.log(`Team member clicked: ${memberName}`);
+        // You can add more interactive features here like opening detailed profiles
+    };
+
+    const handleTeamModalToggle = () => {
+        setShowTeamModal(!showTeamModal);
+        setShowNotificationModal(false);
+        setShowSettingsModal(false);
+        setShowProfileModal(false);
+    };
+
     // Handle logout
     const handleLogout = async () => {
         console.log("Logging out...");
@@ -256,11 +295,112 @@ const Home = () => {
 
     return (
         <motion.div
-            className={`min-h-screen font-red-hat-display transition-colors duration-300 overflow-x-hidden ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}
+            className={`min-h-screen font-red-hat-display transition-colors duration-300 overflow-x-hidden relative ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}
             initial="hidden"
             animate="visible"
             variants={containerVariants}
         >
+            {/* Animated Background Elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[#5E67AC]/5"></div>
+                <motion.div
+                    className="absolute -top-40 -right-40 w-80 h-80 bg-[#5E67AC]/8 rounded-full"
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 180, 360],
+                    }}
+                    transition={{
+                        duration: 20,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                />
+                <motion.div
+                    className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#5E67AC]/6 rounded-full"
+                    animate={{
+                        scale: [1.2, 1, 1.2],
+                        rotate: [360, 180, 0],
+                    }}
+                    transition={{
+                        duration: 25,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                />
+                <motion.div
+                    className="absolute top-1/4 right-1/4 w-32 h-32 bg-[#5E67AC]/10 rounded-full"
+                    animate={{
+                        y: [0, -30, 0],
+                        x: [0, 20, 0],
+                    }}
+                    transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                <motion.div
+                    className="absolute bottom-1/3 left-1/4 w-24 h-24 bg-[#5E67AC]/12 rounded-full"
+                    animate={{
+                        y: [0, 25, 0],
+                        x: [0, -15, 0],
+                    }}
+                    transition={{
+                        duration: 6,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                <motion.div
+                    className="absolute top-1/2 left-1/3 w-16 h-16 bg-[#5E67AC]/15 rounded-full"
+                    animate={{
+                        y: [0, -20, 0],
+                        x: [0, 10, 0],
+                    }}
+                    transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                <motion.div
+                    className="absolute top-3/4 right-1/3 w-20 h-20 bg-[#5E67AC]/9 rounded-full"
+                    animate={{
+                        y: [0, 15, 0],
+                        x: [0, -8, 0],
+                    }}
+                    transition={{
+                        duration: 7,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                <motion.div
+                    className="absolute top-1/3 left-1/2 w-12 h-12 bg-[#5E67AC]/11 rounded-full"
+                    animate={{
+                        y: [0, -12, 0],
+                        x: [0, 6, 0],
+                    }}
+                    transition={{
+                        duration: 4.5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                <motion.div
+                    className="absolute bottom-1/4 right-1/2 w-28 h-28 bg-[#5E67AC]/7 rounded-full"
+                    animate={{
+                        y: [0, -18, 0],
+                        x: [0, 12, 0],
+                    }}
+                    transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+            </div>
             {/* Top Bar */}
             <motion.div
                 className={`fixed top-0 w-full z-50 bg-[#5E67AC] transition-all duration-500 ease-in-out
@@ -273,7 +413,7 @@ const Home = () => {
                     <div className="flex items-center cursor-pointer" onClick={() => setIsTopBarExpanded(!isTopBarExpanded)}>
                         <img src={logo} alt="ActiNurse Logo" className="h-10 md:h-12 w-auto transition-transform duration-300 hover:scale-105" />
                         <div className={`ml-3 text-white text-lg font-bold opacity-70 transition-opacity ${isTopBarExpanded ? 'opacity-100' : 'hidden md:block'}`}>
-                            <span className="text-xs opacity-70">v0.1</span>
+                            <span className="text-xs opacity-70">v0.2</span>
                         </div>
                     </div>
 
@@ -332,7 +472,7 @@ const Home = () => {
                             <div className="space-y-6">
                                 {/* Welcome message */}
                                 <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
-                                    <h2 className="text-xl font-bold mb-2">Bienvenue sur ActiNurse v0.1</h2>
+                                    <h2 className="text-xl font-bold mb-2">Bienvenue sur ActiNurse v0.2</h2>
                                     <p className="text-sm opacity-90">
                                         ActiNurse est une application de gestion pour les infirmiers et infirmières.
                                         Cette version offre des fonctionnalités de base pour la gestion des actes médicaux,
@@ -340,12 +480,28 @@ const Home = () => {
                                     </p>
                                 </div>
 
+                                {/* About Project */}
+                                <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                                    <h2 className="text-xl font-bold mb-2">À propos du projet</h2>
+                                    <p className="text-sm opacity-90 mb-3">
+                                        ActiNurse est né de la vision de trois passionnés de la santé et de la technologie,
+                                        déterminés à révolutionner la gestion hospitalière pour les infirmiers.
+                                    </p>
+                                    <div className="bg-gradient-to-r from-[#5E67AC]/20 to-[#4F5796]/20 rounded-xl p-3 border border-white/10">
+                                        <h3 className="text-md font-semibold mb-2">Notre Mission</h3>
+                                        <p className="text-xs opacity-90">
+                                            Simplifier et optimiser le travail quotidien des infirmiers grâce à une interface
+                                            intuitive et des outils de gestion performants.
+                                        </p>
+                                    </div>
+                                </div>
+
                                 {/* Changelog */}
                                 <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
                                     <h2 className="text-xl font-bold mb-2">Journal des modifications</h2>
                                     <div className="space-y-3">
                                         <div>
-                                            <h3 className="text-md font-semibold">v0.1.0 (Actuel)</h3>
+                                            <h3 className="text-md font-semibold">v0.2.5 (Actuel)</h3>
                                             <ul className="list-disc list-inside text-sm opacity-90 ml-2">
                                                 <li>Première version de l'application</li>
                                                 <li>Journal des actes médicaux</li>
@@ -380,6 +536,94 @@ const Home = () => {
                                             <p className="text-2xl font-bold">{weather.temp}</p>
                                             <p className="text-xs opacity-80">{weather.condition}</p>
                                         </div>
+                                    </div>
+                                </div>
+
+                                {/* Team Section */}
+                                <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                                    <motion.h2
+                                        className="text-xl font-bold mb-4 text-center"
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.5, delay: 0.2 }}
+                                    >
+                                        Équipe Fondatrice
+                                    </motion.h2>
+                                    <div className="space-y-3">
+                                        {/* Abir Sebbar */}
+                                        <motion.div
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ duration: 0.5, delay: 0.3 }}
+                                            className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                                            whileHover={{ scale: 1.02, x: 5 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => handleTeamMemberClick('Abir Sebbar')}
+                                        >
+                                            <div className="relative">
+                                                <img
+                                                    src={abirImage}
+                                                    alt="Abir Sebbar"
+                                                    className="w-12 h-12 rounded-full object-cover border-2 border-white/20 shadow-lg"
+                                                />
+                                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full border-2 border-white shadow-sm"></div>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-semibold text-sm truncate">Abir Sebbar</h3>
+                                                <p className="text-xs opacity-80 truncate">Conceptualisation & Organisation</p>
+                                            </div>
+                                            <div className="text-xs opacity-60 bg-white/10 px-2 py-1 rounded-full">Fondatrice</div>
+                                        </motion.div>
+
+                                        {/* Mohammed Nassiri */}
+                                        <motion.div
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ duration: 0.5, delay: 0.4 }}
+                                            className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                                            whileHover={{ scale: 1.02, x: 5 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => handleTeamMemberClick('Mohammed Nassiri')}
+                                        >
+                                            <div className="relative">
+                                                <img
+                                                    src={mohammedImage}
+                                                    alt="Mohammed Nassiri"
+                                                    className="w-12 h-12 rounded-full object-cover border-2 border-white/20 shadow-lg"
+                                                />
+                                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full border-2 border-white shadow-sm"></div>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-semibold text-sm truncate">Mohammed Nassiri</h3>
+                                                <p className="text-xs opacity-80 truncate">Lead Developer & UI/UX Designer</p>
+                                            </div>
+                                            <div className="text-xs opacity-60 bg-white/10 px-2 py-1 rounded-full">Fondateur</div>
+                                        </motion.div>
+
+                                        {/* Oumaima Khadri */}
+                                        <motion.div
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ duration: 0.5, delay: 0.5 }}
+                                            className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                                            whileHover={{ scale: 1.02, x: 5 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => handleTeamMemberClick('Oumaima Khadri')}
+                                        >
+                                            <div className="relative">
+                                                <img
+                                                    src={oumaimaImage}
+                                                    alt="Oumaima Khadri"
+                                                    className="w-12 h-12 rounded-full object-cover border-2 border-white/20 shadow-lg"
+                                                />
+                                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full border-2 border-white shadow-sm"></div>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-semibold text-sm truncate">Oumaima Khadri</h3>
+                                                <p className="text-xs opacity-80 truncate">Conceptualisation & Organisation</p>
+                                            </div>
+                                            <div className="text-xs opacity-60 bg-white/10 px-2 py-1 rounded-full">Fondatrice</div>
+                                        </motion.div>
                                     </div>
                                 </div>
 
@@ -549,11 +793,294 @@ const Home = () => {
                         </div>
                     </motion.div>
                 )}
+
+                {/* Floating Team Modal */}
+                <AnimatePresence>
+                    {showTeamModal && (
+                        <motion.div
+                            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            {/* Backdrop */}
+                            <motion.div
+                                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={handleTeamModalToggle}
+                            />
+
+                            {/* Modal Content */}
+                            <motion.div
+                                className="relative bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl max-h-[90vh]"
+                                initial={{ scale: 0.8, opacity: 0, y: 50 }}
+                                animate={{ scale: 1, opacity: 1, y: 0 }}
+                                exit={{ scale: 0.8, opacity: 0, y: 50 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 30,
+                                    duration: 0.5
+                                }}
+                            >
+                                {/* Header */}
+                                <div className="bg-gradient-to-r from-[#5E67AC] via-[#4F5796] to-[#5E67AC] text-white p-6 text-center relative overflow-hidden">
+                                    {/* Floating bubbles in header */}
+                                    <motion.div
+                                        className="absolute top-4 left-8 w-4 h-4 bg-white/20 rounded-full"
+                                        animate={{
+                                            y: [0, -20, 0],
+                                            x: [0, 10, 0],
+                                            scale: [1, 1.2, 1],
+                                        }}
+                                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                    />
+                                    <motion.div
+                                        className="absolute top-8 right-12 w-6 h-6 bg-white/15 rounded-full"
+                                        animate={{
+                                            y: [0, -15, 0],
+                                            x: [0, -8, 0],
+                                            scale: [1, 1.1, 1],
+                                        }}
+                                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                    />
+                                    <motion.div
+                                        className="absolute bottom-6 left-1/4 w-3 h-3 bg-white/25 rounded-full"
+                                        animate={{
+                                            y: [0, -12, 0],
+                                            x: [0, 6, 0],
+                                            scale: [1, 1.3, 1],
+                                        }}
+                                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                                    />
+
+                                    <h2 className="text-3xl font-black mb-2">Équipe Fondatrice</h2>
+                                    <p className="text-lg opacity-90">Les esprits créatifs derrière ActiNurse</p>
+
+                                    <button
+                                        onClick={handleTeamModalToggle}
+                                        className="absolute top-4 right-4 text-white/70 hover:text-white text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-all duration-200"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+
+                                {/* Team Members Grid */}
+                                <div className="p-8 bg-gradient-to-br from-gray-50 to-white">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                        {/* Abir Sebbar */}
+                                        <motion.div
+                                            className="relative group"
+                                            initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            transition={{ delay: 0.2, duration: 0.6, type: "spring" }}
+                                        >
+                                            <motion.div
+                                                className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-200/50"
+                                                whileHover={{
+                                                    scale: 1.05,
+                                                    rotateY: 5,
+                                                    boxShadow: "0 25px 50px -12px rgba(147, 51, 234, 0.25)"
+                                                }}
+                                                animate={{
+                                                    y: [0, -5, 0],
+                                                }}
+                                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                            >
+                                                {/* Floating elements around Abir */}
+                                                <motion.div
+                                                    className="absolute -top-2 -left-2 w-4 h-4 bg-purple-300/60 rounded-full"
+                                                    animate={{
+                                                        scale: [1, 1.5, 1],
+                                                        opacity: [0.6, 1, 0.6],
+                                                    }}
+                                                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                                />
+                                                <motion.div
+                                                    className="absolute -bottom-1 -right-1 w-3 h-3 bg-pink-300/60 rounded-full"
+                                                    animate={{
+                                                        scale: [1, 1.3, 1],
+                                                        opacity: [0.6, 1, 0.6],
+                                                    }}
+                                                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                                                />
+
+                                                <div className="relative mb-4">
+                                                    <motion.img
+                                                        src={abirImage}
+                                                        alt="Abir Sebbar"
+                                                        className="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover"
+                                                        whileHover={{ scale: 1.1, rotate: 5 }}
+                                                        transition={{ type: "spring", stiffness: 300 }}
+                                                    />
+                                                    <motion.div
+                                                        className="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full border-3 border-white shadow-lg flex items-center justify-center"
+                                                        animate={{ rotate: 360 }}
+                                                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                                                    >
+                                                        <span className="text-white text-xs font-bold">💡</span>
+                                                    </motion.div>
+                                                </div>
+                                                <h3 className="text-xl font-bold text-gray-800 mb-2">Abir Sebbar</h3>
+                                                <p className="text-purple-600 font-medium mb-2">Conceptualisation & Organisation</p>
+                                                <div className="bg-gradient-to-r from-purple-400 to-pink-400 text-white text-xs px-3 py-1 rounded-full font-medium">
+                                                    Fondatrice
+                                                </div>
+                                            </motion.div>
+                                        </motion.div>
+
+                                        {/* Mohammed Nassiri */}
+                                        <motion.div
+                                            className="relative group"
+                                            initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
+                                        >
+                                            <motion.div
+                                                className="bg-gradient-to-br from-blue-100 to-cyan-100 rounded-3xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-200/50"
+                                                whileHover={{
+                                                    scale: 1.05,
+                                                    rotateY: -5,
+                                                    boxShadow: "0 25px 50px -12px rgba(59, 130, 246, 0.25)"
+                                                }}
+                                                animate={{
+                                                    y: [0, -5, 0],
+                                                }}
+                                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                                            >
+                                                {/* Floating elements around Mohammed */}
+                                                <motion.div
+                                                    className="absolute -top-2 -right-2 w-5 h-5 bg-blue-300/60 rounded-full"
+                                                    animate={{
+                                                        scale: [1, 1.4, 1],
+                                                        opacity: [0.6, 1, 0.6],
+                                                    }}
+                                                    transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                                                />
+                                                <motion.div
+                                                    className="absolute -bottom-1 -left-1 w-4 h-4 bg-cyan-300/60 rounded-full"
+                                                    animate={{
+                                                        scale: [1, 1.2, 1],
+                                                        opacity: [0.6, 1, 0.6],
+                                                    }}
+                                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                                />
+
+                                                <div className="relative mb-4">
+                                                    <motion.img
+                                                        src={mohammedImage}
+                                                        alt="Mohammed Nassiri"
+                                                        className="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover"
+                                                        whileHover={{ scale: 1.1, rotate: -5 }}
+                                                        transition={{ type: "spring", stiffness: 300 }}
+                                                    />
+                                                    <motion.div
+                                                        className="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full border-3 border-white shadow-lg flex items-center justify-center"
+                                                        animate={{ rotate: -360 }}
+                                                        transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                                                    >
+                                                        <span className="text-white text-xs font-bold">⚡</span>
+                                                    </motion.div>
+                                                </div>
+                                                <h3 className="text-xl font-bold text-gray-800 mb-2">Mohammed Nassiri</h3>
+                                                <p className="text-blue-600 font-medium mb-2">Lead Developer & UI/UX Designer</p>
+                                                <div className="bg-gradient-to-r from-blue-400 to-cyan-400 text-white text-xs px-3 py-1 rounded-full font-medium">
+                                                    Fondateur
+                                                </div>
+                                            </motion.div>
+                                        </motion.div>
+
+                                        {/* Oumaima Khadri */}
+                                        <motion.div
+                                            className="relative group"
+                                            initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
+                                        >
+                                            <motion.div
+                                                className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-3xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-green-200/50"
+                                                whileHover={{
+                                                    scale: 1.05,
+                                                    rotateY: 5,
+                                                    boxShadow: "0 25px 50px -12px rgba(34, 197, 94, 0.25)"
+                                                }}
+                                                animate={{
+                                                    y: [0, -5, 0],
+                                                }}
+                                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                            >
+                                                {/* Floating elements around Oumaima */}
+                                                <motion.div
+                                                    className="absolute -top-1 -left-1 w-4 h-4 bg-green-300/60 rounded-full"
+                                                    animate={{
+                                                        scale: [1, 1.6, 1],
+                                                        opacity: [0.6, 1, 0.6],
+                                                    }}
+                                                    transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                                                />
+                                                <motion.div
+                                                    className="absolute -bottom-2 -right-2 w-3 h-3 bg-emerald-300/60 rounded-full"
+                                                    animate={{
+                                                        scale: [1, 1.4, 1],
+                                                        opacity: [0.6, 1, 0.6],
+                                                    }}
+                                                    transition={{ duration: 2.3, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+                                                />
+
+                                                <div className="relative mb-4">
+                                                    <motion.img
+                                                        src={oumaimaImage}
+                                                        alt="Oumaima Khadri"
+                                                        className="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover"
+                                                        whileHover={{ scale: 1.1, rotate: 5 }}
+                                                        transition={{ type: "spring", stiffness: 300 }}
+                                                    />
+                                                    <motion.div
+                                                        className="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full border-3 border-white shadow-lg flex items-center justify-center"
+                                                        animate={{ rotate: 360 }}
+                                                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                                    >
+                                                        <span className="text-white text-xs font-bold">🌟</span>
+                                                    </motion.div>
+                                                </div>
+                                                <h3 className="text-xl font-bold text-gray-800 mb-2">Oumaima Khadri</h3>
+                                                <p className="text-green-600 font-medium mb-2">Conceptualisation & Organisation</p>
+                                                <div className="bg-gradient-to-r from-green-400 to-emerald-400 text-white text-xs px-3 py-1 rounded-full font-medium">
+                                                    Fondatrice
+                                                </div>
+                                            </motion.div>
+                                        </motion.div>
+                                    </div>
+
+                                    {/* Mission Statement */}
+                                    <motion.div
+                                        className="mt-8 text-center"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.8, duration: 0.6 }}
+                                    >
+                                        <div className="bg-gradient-to-r from-[#5E67AC]/10 to-[#4F5796]/10 rounded-2xl p-6 border border-[#5E67AC]/20">
+                                            <h3 className="text-2xl font-bold text-[#5E67AC] mb-3">Notre Mission</h3>
+                                            <p className="text-gray-700 text-lg leading-relaxed">
+                                                Révolutionner la gestion hospitalière en créant des outils innovants
+                                                qui simplifient le travail quotidien des infirmiers et améliorent
+                                                la qualité des soins aux patients.
+                                            </p>
+                                        </div>
+                                    </motion.div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </AnimatePresence>
 
             {/* Main Content */}
             <motion.main
-                className={`pt-28 md:pt-32 px-4 md:px-6 pb-8 transition-all duration-300 ${isTopBarExpanded ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}
+                className={`pt-28 md:pt-32 px-4 md:px-6 pb-8 transition-all duration-300 relative z-10 ${isTopBarExpanded ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}
                 variants={containerVariants}
             >
                 <motion.h1
@@ -568,12 +1095,12 @@ const Home = () => {
                 {/* Carousel Container */}
                 <motion.div
                     ref={carouselRef}
-                    className="flex items-center justify-center h-[340px] md:h-[400px] mx-auto relative overflow-hidden"
+                    className="flex items-center justify-center h-[340px] md:h-[400px] mx-auto relative overflow-visible z-10"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.8 }}
                 >
-                    <div className="flex space-x-6 items-center px-6 overflow-x-auto scrollbar-none snap-x snap-mandatory scroll-smooth">
+                    <div className="flex space-x-6 items-center px-6 overflow-visible scrollbar-none snap-x snap-mandatory scroll-smooth">
                         <AnimatePresence>
                             {cardsData.map((card, index) => (
                                 <motion.div
@@ -596,6 +1123,7 @@ const Home = () => {
                                         to={card.link}
                                         ref={cardRefs.current[index]}
                                         data-index={index}
+                                        onClick={() => window.trackHomeInteraction?.(card.title)}
                                         className={`flex-none w-64 h-80 md:w-72 md:h-96 rounded-[2rem] p-6
                                                   transition-all duration-300 snap-center block
                                                   ${activeCardIndex === index ? 'shadow-xl shadow-[#5E67AC]/30' : ''}
@@ -646,7 +1174,7 @@ const Home = () => {
 
                 {/* Navigation dots */}
                 <motion.div
-                    className="flex justify-center mt-6 space-x-2"
+                    className="flex justify-center mt-6 space-x-2 relative z-10"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1, duration: 0.6 }}
@@ -671,7 +1199,7 @@ const Home = () => {
 
                 {/* Inspirational Quote - Removed hover animation */}
                 <motion.div
-                    className="mt-8 md:mt-10 text-center px-4 max-w-2xl mx-auto"
+                    className="mt-8 md:mt-10 text-center px-4 max-w-2xl mx-auto relative z-10"
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2, duration: 0.8 }}
@@ -687,6 +1215,34 @@ const Home = () => {
                             "{inspirationalQuote}"
                         </motion.p>
                     </div>
+                </motion.div>
+
+                {/* About/Credits Button */}
+                <motion.div
+                    className="mt-6 text-center relative z-10"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.4, duration: 0.6 }}
+                >
+                    <motion.button
+                        onClick={handleTeamModalToggle}
+                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#5E67AC] to-[#4F5796] text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 group"
+                        whileHover={{
+                            scale: 1.05,
+                            boxShadow: "0 20px 25px -5px rgba(94, 103, 172, 0.3)"
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <span className="mr-2">💻</span>
+                        À propos de l'équipe
+                        <motion.span
+                            className="ml-2 opacity-70 group-hover:opacity-100"
+                            animate={{ x: [0, 3, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                            →
+                        </motion.span>
+                    </motion.button>
                 </motion.div>
             </motion.main>
         </motion.div>

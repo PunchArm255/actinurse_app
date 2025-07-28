@@ -142,7 +142,7 @@ const Welcome = () => {
                         </motion.div>
                         <div className="text-white">
                             <h1 className="text-2xl font-black">ActiNurse</h1>
-                            <p className="text-xs opacity-70">v0.1.0 - Bêta</p>
+                            <p className="text-xs opacity-70">v0.2.5 - Prototype</p>
                         </div>
                     </motion.div>
 

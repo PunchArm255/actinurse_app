@@ -769,7 +769,7 @@ const Journal = () => {
                     <div className="flex items-center cursor-pointer" onClick={() => setIsTopBarExpanded(!isTopBarExpanded)}>
                         <img src={logo} alt="ActiNurse Logo" className="h-10 md:h-12 w-auto transition-transform duration-300 hover:scale-105" />
                         <div className={`ml-3 text-white text-lg font-bold opacity-70 transition-opacity ${isTopBarExpanded ? 'opacity-100' : 'hidden md:block'}`}>
-                            <span className="text-xs opacity-70">v0.1</span>
+                            <span className="text-xs opacity-70">v0.2</span>
                         </div>
                     </div>
 
@@ -831,7 +831,7 @@ const Journal = () => {
                             <div className="space-y-6">
                                 {/* Welcome message */}
                                 <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
-                                    <h2 className="text-xl font-bold mb-2">Bienvenue sur ActiNurse v0.1</h2>
+                                    <h2 className="text-xl font-bold mb-2">Bienvenue sur ActiNurse v0.2</h2>
                                     <p className="text-sm opacity-90">
                                         ActiNurse est une application de gestion pour les infirmiers et infirmières.
                                         Cette version offre des fonctionnalités de base pour la gestion des actes médicaux,
@@ -844,7 +844,7 @@ const Journal = () => {
                                     <h2 className="text-xl font-bold mb-2">Journal des modifications</h2>
                                     <div className="space-y-3">
                                         <div>
-                                            <h3 className="text-md font-semibold">v0.1.0 (Actuel)</h3>
+                                            <h3 className="text-md font-semibold">v0.2.5 (Actuel)</h3>
                                             <ul className="list-disc list-inside text-sm opacity-90 ml-2">
                                                 <li>Première version de l'application</li>
                                                 <li>Journal des actes médicaux</li>

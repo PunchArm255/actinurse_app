@@ -334,7 +334,7 @@ const Stocks = () => {
                     <div className="flex items-center cursor-pointer" onClick={() => setIsTopBarExpanded(!isTopBarExpanded)}>
                         <img src={logo} alt="ActiNurse Logo" className="h-10 md:h-12 w-auto transition-transform duration-300 hover:scale-105" />
                         <div className={`ml-3 text-white text-lg font-bold opacity-70 transition-opacity ${isTopBarExpanded ? 'opacity-100' : 'hidden md:block'}`}>
-                            <span className="text-xs opacity-70">v0.1</span>
+                            <span className="text-xs opacity-70">v0.2</span>
                         </div>
                     </div>
 
@@ -396,7 +396,7 @@ const Stocks = () => {
                             <div className="space-y-6">
                                 {/* Welcome message */}
                                 <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
-                                    <h2 className="text-xl font-bold mb-2">Bienvenue sur ActiNurse v0.1</h2>
+                                    <h2 className="text-xl font-bold mb-2">Bienvenue sur ActiNurse v0.2</h2>
                                     <p className="text-sm opacity-90">
                                         ActiNurse est une application de gestion pour les infirmiers et infirmières.
                                         Cette version offre des fonctionnalités de base pour la gestion des actes médicaux,
@@ -409,7 +409,7 @@ const Stocks = () => {
                                     <h2 className="text-xl font-bold mb-2">Journal des modifications</h2>
                                     <div className="space-y-3">
                                         <div>
-                                            <h3 className="text-md font-semibold">v0.1.0 (Actuel)</h3>
+                                            <h3 className="text-md font-semibold">v0.2.5 (Actuel)</h3>
                                             <ul className="list-disc list-inside text-sm opacity-90 ml-2">
                                                 <li>Première version de l'application</li>
                                                 <li>Journal des actes médicaux</li>
@@ -639,7 +639,7 @@ const Stocks = () => {
                     >
                         <h3 className="text-lg font-bold text-[#4f5796] mb-2">Budget Initial</h3>
                         <p className="text-2xl font-semibold text-[#4f5796]">
-                            {stockData.dotationInitiale}€
+                            {stockData.dotationInitiale} unités
                         </p>
                     </motion.div>
 
@@ -650,7 +650,7 @@ const Stocks = () => {
                     >
                         <h3 className="text-lg font-bold text-[#ac5e5e] mb-2">Budget Consommé</h3>
                         <p className="text-2xl font-semibold text-[#ac5e5e]">
-                            {stockData.dotationConsommee}€
+                            {stockData.dotationConsommee} unités
                         </p>
                     </motion.div>
 
@@ -661,7 +661,7 @@ const Stocks = () => {
                     >
                         <h3 className="text-lg font-bold text-[#437d4f] mb-2">Budget Restant</h3>
                         <p className="text-2xl font-semibold text-[#437d4f]">
-                            {stockData.dotationRestante}€
+                            {stockData.dotationRestante} unités
                         </p>
                     </motion.div>
                 </motion.div>
@@ -737,7 +737,7 @@ const Stocks = () => {
                         >
                             <option value="name">Trier par nom</option>
                             <option value="stock">Trier par stock</option>
-                            <option value="price">Trier par prix</option>
+                            <option value="price">Trier par unités</option>
                             <option value="consumed">Trier par consommé</option>
                         </select>
 
@@ -823,8 +823,8 @@ const Stocks = () => {
                                             </motion.span>
                                         </div>
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-600">Prix unitaire:</span>
-                                            <span className="font-semibold">{item.price}€</span>
+                                            <span className="text-gray-600">Unités:</span>
+                                            <span className="font-semibold">{item.price} unités</span>
                                         </div>
                                         <div className="flex justify-between text-sm">
                                             <span className="text-gray-600">Consommé:</span>
@@ -918,7 +918,7 @@ const Stocks = () => {
                                     className="w-full border border-gray-300 rounded-2xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#5e67ac] text-center text-lg font-semibold"
                                 />
                                 <p className="text-sm text-gray-500 mt-2 text-center">
-                                    Coût total: <span className="font-semibold">{(consumeAmount * selectedItem.price).toFixed(2)}€</span>
+                                    Total: <span className="font-semibold">{(consumeAmount * selectedItem.price).toFixed(2)} unités</span>
                                 </p>
                             </motion.div>
 

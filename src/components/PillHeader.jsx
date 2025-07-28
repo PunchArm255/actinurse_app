@@ -111,8 +111,8 @@ const PillHeader = () => {
             {/* Pill Header */}
             <motion.div
                 className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ease-in-out ${isExpanded
-                        ? 'w-[95vw] h-[90vh] rounded-3xl'
-                        : 'w-auto h-16 rounded-full'
+                    ? 'w-[95vw] h-[90vh] rounded-3xl'
+                    : 'w-auto h-16 rounded-full'
                     } bg-[#5E67AC] shadow-2xl backdrop-blur-sm border border-white/20`}
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -130,7 +130,7 @@ const PillHeader = () => {
                         </motion.div>
                         <div className="text-white">
                             <h1 className="text-lg font-black">ActiNurse</h1>
-                            <p className="text-xs opacity-70">v0.1.0</p>
+                            <p className="text-xs opacity-70">v0.2.5</p>
                         </div>
                     </div>
 

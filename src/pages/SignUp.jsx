@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createAccount } from '../lib/appwrite';
-import logo from '../assets/logo.svg';
+import logoIcon from '../assets/logoIcon.svg';
 
 const SignUp = () => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -448,7 +448,7 @@ const SignUp = () => {
                         whileHover={{ scale: 1.1, rotate: 360 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <img src={logo} alt="ActiNurse" className="w-full h-full" />
+                        <img src={logoIcon} alt="ActiNurse" className="w-full h-full" />
                     </motion.div>
                     <motion.h1
                         className="text-3xl font-black text-white mb-2"

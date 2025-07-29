@@ -620,7 +620,7 @@ const Home = () => {
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <h3 className="font-semibold text-sm truncate">Oumaima Khadri</h3>
-                                                <p className="text-xs opacity-80 truncate">Conceptualisation & Organisation</p>
+                                                <p className="text-xs opacity-80 truncate">Coordination</p>
                                             </div>
                                             <div className="text-xs opacity-60 bg-white/10 px-2 py-1 rounded-full">Fondatrice</div>
                                         </motion.div>
@@ -1047,7 +1047,8 @@ const Home = () => {
                                                     </motion.div>
                                                 </div>
                                                 <h3 className="text-xl font-bold text-gray-800 mb-2">Oumaima Khadri</h3>
-                                                <p className="text-green-600 font-medium mb-2">Conceptualisation & Organisation</p>
+                                                <p className="text-green-600 font-medium mb-2">Coordination</p>
+                                                <p className="text-green-600 font-medium mb-2">⠀</p>
                                                 <div className="bg-gradient-to-r from-green-400 to-emerald-400 text-white text-xs px-3 py-1 rounded-full font-medium">
                                                     Fondatrice
                                                 </div>
